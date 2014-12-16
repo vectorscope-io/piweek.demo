@@ -5,10 +5,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"log"
+
+	"github.com/gorilla/websocket"
 	// "math/rand"
 	"net/http"
 	"time"
@@ -64,7 +64,6 @@ func (c *connection) readPump() {
 			str += string(int(value))
 		}
 		fmt.Println(str)
-		h.broadcast <- message
 	}
 }
 
@@ -99,16 +98,6 @@ func (c *connection) writePump() {
 	}
 }
 
-func (c *connection) sendStatsData(metrics chan serverstats.Metric) {
-	for metric := range metrics {
-		b, _ := json.Marshal(metric)
-		if err := c.write(websocket.TextMessage, b); err != nil {
-			return
-		}
-
-	}
-}
-
 // serverWs handles websocket requests from the peer.
 func serveWs(metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -122,9 +111,7 @@ func serveWs(metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Req
 	}
 	c := &connection{send: make(chan []byte, 256), ws: ws}
 	h.register <- c
-	h.subscription <- SubscriptionMessage{cmd: SUBSCRIBE, topic: "serverstats", connection: c}
 
-	//go c.writePump()
-	go c.sendStatsData(metrics)
-	//c.readPump()
+	go c.writePump()
+	c.readPump()
 }
