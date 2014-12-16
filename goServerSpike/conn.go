@@ -11,6 +11,7 @@ import (
 	"time"
 	"fmt"
 	"math/rand"
+	"encoding/json"
 //	"strconv"
 //	"reflect"
 )
@@ -57,8 +58,6 @@ func (c *connection) readPump() {
 		if err != nil {
 			break
 		}
-		//fmt.Println("Egi >>> ", reflect.TypeOf(message))
-		//fmt.Println("Egi >>> ", message)
 		var str string
 	    for _, value := range message {
 		    str += string(int(value))
@@ -84,13 +83,10 @@ func (c *connection) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			fmt.Println("msg >> " , message)
 			if !ok {
 				c.write(websocket.CloseMessage, []byte{})
 				return
 			}
-			//msg := "kaixo"
-			//a := []byte(msg)
 			if err := c.write(websocket.TextMessage,message); err != nil {
 				return
 			}
@@ -102,13 +98,25 @@ func (c *connection) writePump() {
 	}
 }
 
+type Message struct {
+
+	Id    int
+	Value string
+	Msg   string 
+
+}
+
 func (c *connection) sendChartData(){
 	r := rand.New(rand.NewSource(99))
 	for {
 		number :=  r.Float64() * (1.0 - -1.0) + -1.0
 		msg := fmt.Sprintf("%.6f",number)
-	    a := []byte(msg)
-		if err := c.write(websocket.TextMessage,a); err != nil {
+		//json := { "id": 33, "value": number, "msg": msg}
+	    //a := []byte(json)
+		m := Message{24, "kaixo", msg}
+		b, _ := json.Marshal(m)
+		//a := []byte(`{ "id": 33, "value": "number", "msg": "msg" }`)
+		if err := c.write(websocket.TextMessage,b); err != nil {
 			return
 		}
 		time.Sleep(800 * time.Millisecond)

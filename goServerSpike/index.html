@@ -77,20 +77,21 @@ var path = svg.append("g")
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://{{$}}/ws");
         conn.onclose = function(evt) {
-            appendLog($("<div><b>Connection closed.</b></div>"))
+           alert("Connection closed!")
         }
         conn.onmessage = function(evt) {
-           tick(evt.data)
+            tick(evt.data)
         }
     } else {
         appendLog($("<div><b>Your browser does not support WebSockets.</b></div>"))
     }
 
 function tick(value) {
-
+  var obj = JSON.parse(value);
   // push a new data point onto the back
   console.log(value)
-  data.push(value);
+  console.log(obj.Id)
+  data.push(obj.Msg);
 
   // redraw the line, and slide it to the left
   path

@@ -17,6 +17,7 @@ var indexTempl = template.Must(template.ParseFiles("index.html"))
 
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("server home")
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
