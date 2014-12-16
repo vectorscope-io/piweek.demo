@@ -6,16 +6,17 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"text/template"
-	"fmt"
-	"github.com/gorilla/mux"
+
+	"github.com/aleasoluciones/serverstats"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
 var indexTempl = template.Must(template.ParseFiles("index.html"))
-
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("server home")
@@ -27,14 +28,18 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 	indexTempl.Execute(w, r.Host)
 }
 
-
 func main() {
 	flag.Parse()
 	r := mux.NewRouter()
 	go h.run()
+
+	serverStats := serverstats.NewServerStats()
+
 	r.HandleFunc("/metrics", serveHome)
-	r.HandleFunc("/ws", serveWs)
-	http.Handle("/",r)
+	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(serverStats.Metrics, w, r)
+	})
+	http.Handle("/", r)
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

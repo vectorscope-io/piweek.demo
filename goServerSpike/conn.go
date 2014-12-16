@@ -5,15 +5,16 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
+	// "math/rand"
 	"net/http"
 	"time"
-	"fmt"
-	"math/rand"
-	"encoding/json"
-//	"strconv"
-//	"reflect"
+	//	"strconv"
+	//	"reflect"
+	"github.com/aleasoluciones/serverstats"
 )
 
 const (
@@ -59,8 +60,8 @@ func (c *connection) readPump() {
 			break
 		}
 		var str string
-	    for _, value := range message {
-		    str += string(int(value))
+		for _, value := range message {
+			str += string(int(value))
 		}
 		fmt.Println(str)
 		h.broadcast <- message
@@ -87,7 +88,7 @@ func (c *connection) writePump() {
 				c.write(websocket.CloseMessage, []byte{})
 				return
 			}
-			if err := c.write(websocket.TextMessage,message); err != nil {
+			if err := c.write(websocket.TextMessage, message); err != nil {
 				return
 			}
 		case <-ticker.C:
@@ -98,31 +99,19 @@ func (c *connection) writePump() {
 	}
 }
 
-type Message struct {
-
-	Id    int
-	Value string
-	Msg   string
-
-}
-
-func (c *connection) sendChartData(){
-	r := rand.New(rand.NewSource(99))
-	for {
-		number :=  r.Float64() * (1.0 - -1.0) + -1.0
-		msg := fmt.Sprintf("%.6f",number)
-		m := Message{24, "kaixo", msg}
-		b, _ := json.Marshal(m)
-		if err := c.write(websocket.TextMessage,b); err != nil {
+func (c *connection) sendStatsData(metrics chan serverstats.Metric) {
+	for metric := range metrics {
+		b, _ := json.Marshal(metric)
+		fmt.Println("Vamos a enviar", b)
+		if err := c.write(websocket.TextMessage, b); err != nil {
 			return
 		}
-		time.Sleep(800 * time.Millisecond)
+
 	}
 }
 
-
 // serverWs handles websocket requests from the peer.
-func serveWs(w http.ResponseWriter, r *http.Request) {
+func serveWs(metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
@@ -135,6 +124,6 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	c := &connection{send: make(chan []byte, 256), ws: ws}
 	h.register <- c
 	//go c.writePump()
-    go c.sendChartData()
+	go c.sendStatsData(metrics)
 	//c.readPump()
 }

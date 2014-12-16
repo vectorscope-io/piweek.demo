@@ -37,7 +37,7 @@ var x = d3.scale.linear()
     .range([0, width]);
 
 var y = d3.scale.linear()
-    .domain([-1, 1])
+    .domain([0, 100])
     .range([height, 0]);
 
 var line = d3.svg.line()
@@ -89,22 +89,24 @@ var path = svg.append("g")
 function tick(value) {
   var obj = JSON.parse(value);
   // push a new data point onto the back
-  console.log(value)
-  console.log(obj.Id)
-  data.push(obj.Msg);
-
-  // redraw the line, and slide it to the left
-  path
-      .attr("d", line)
+  console.log(obj)
+  if (obj.Name == "cpu.idle") {
+    console.log("DATO", obj.Value)
+    data.push(obj.Value);
+    // redraw the line, and slide it to the left
+    path.attr("d", line)
       .attr("transform", null)
-    .transition()
+      .transition()
       .duration(500)
       .ease("linear")
       .attr("transform", "translate(" + x(-1) + ",0)")
      // .each("end", tick);
 
-  // pop the old data point off the front
-  data.shift();
+    // pop the old data point off the front
+    data.shift();
+    console.log(obj)
+  }
+
 
 }
 
