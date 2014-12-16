@@ -33,7 +33,7 @@ func main() {
 	r := mux.NewRouter()
 	go h.run()
 
-	serverStats := serverstats.NewServerStats()
+	serverStats := serverstats.NewServerStats(serverstats.DefaultPeriodes)
 
 	r.HandleFunc("/metrics", serveHome)
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
