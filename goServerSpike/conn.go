@@ -102,7 +102,6 @@ func (c *connection) writePump() {
 func (c *connection) sendStatsData(metrics chan serverstats.Metric) {
 	for metric := range metrics {
 		b, _ := json.Marshal(metric)
-		fmt.Println("Vamos a enviar", b)
 		if err := c.write(websocket.TextMessage, b); err != nil {
 			return
 		}
@@ -123,6 +122,8 @@ func serveWs(metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Req
 	}
 	c := &connection{send: make(chan []byte, 256), ws: ws}
 	h.register <- c
+	h.subscription <- SubscriptionMessage{cmd: SUBSCRIBE, topic: "serverstats", connection: c}
+
 	//go c.writePump()
 	go c.sendStatsData(metrics)
 	//c.readPump()
