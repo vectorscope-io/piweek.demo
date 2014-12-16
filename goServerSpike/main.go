@@ -10,16 +10,13 @@ import (
 	"net/http"
 	"text/template"
 	"fmt"
-//	"strings"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
-var homeTempl = template.Must(template.ParseFiles("home.html"))
 var indexTempl = template.Must(template.ParseFiles("index.html"))
 
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Egi >> ", r.URL.Path)
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
@@ -34,7 +31,6 @@ func main() {
 	go h.run()
 	http.HandleFunc("/metrics", serveHome)
 	http.HandleFunc("/ws", serveWs)
-//	http.Handle("/js/", http.FileServer(http.Dir("./js/")))
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
