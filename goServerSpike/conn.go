@@ -102,7 +102,7 @@ type Message struct {
 
 	Id    int
 	Value string
-	Msg   string 
+	Msg   string
 
 }
 
@@ -111,11 +111,8 @@ func (c *connection) sendChartData(){
 	for {
 		number :=  r.Float64() * (1.0 - -1.0) + -1.0
 		msg := fmt.Sprintf("%.6f",number)
-		//json := { "id": 33, "value": number, "msg": msg}
-	    //a := []byte(json)
 		m := Message{24, "kaixo", msg}
 		b, _ := json.Marshal(m)
-		//a := []byte(`{ "id": 33, "value": "number", "msg": "msg" }`)
 		if err := c.write(websocket.TextMessage,b); err != nil {
 			return
 		}
@@ -139,5 +136,5 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	h.register <- c
 	//go c.writePump()
     go c.sendChartData()
-	c.readPump()
+	//c.readPump()
 }
