@@ -4,9 +4,13 @@
 
 package main
 
+import (
+	"github.com/kr/pretty"
+)
+
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
-type hub struct {
+type WSHub struct {
 	// Registered connections.
 	connections map[*connection]bool
 	// Inbound messages from the connections.
@@ -17,14 +21,18 @@ type hub struct {
 	unregister chan *connection
 }
 
-var h = hub{
-	broadcast:   make(chan []byte),
-	register:    make(chan *connection),
-	unregister:  make(chan *connection),
-	connections: make(map[*connection]bool),
+func NewWSHub() *WSHub {
+	h := &WSHub{
+		broadcast:   make(chan []byte),
+		register:    make(chan *connection),
+		unregister:  make(chan *connection),
+		connections: make(map[*connection]bool),
+	}
+	go h.run()
+	return h
 }
 
-func (h *hub) run() {
+func (h *WSHub) run() {
 	for {
 		select {
 		case c := <-h.register:
@@ -35,6 +43,7 @@ func (h *hub) run() {
 				close(c.send)
 			}
 		case m := <-h.broadcast:
+			pretty.Println("EFA MESSAGE", string(m))
 			for c := range h.connections {
 				select {
 				case c.send <- m:
