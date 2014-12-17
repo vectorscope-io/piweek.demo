@@ -34,11 +34,11 @@ var piweek = {};
       ds.loadAvgFifteenDataSets = new TimeSeries();
 
       var metricsDataSets = {
-        "swap_usedpercent": ds.swapUsedDataSets,
-        "mem_actualusedpercent": ds.memUsedDataSets,
-        "loadavg_one": ds.loadAvgOneDataSets,
-        "loadavg_five": ds.loadAvgFiveDataSets,
-        "loadavg_fitfteen": ds.loadAvgFifteenDataSets,
+        "swap.usedpercent": ds.swapUsedDataSets,
+        "mem.actualusedpercent": ds.memUsedDataSets,
+        "loadavg.one": ds.loadAvgOneDataSets,
+        "loadavg.five": ds.loadAvgFiveDataSets,
+        "loadavg.fitfteen": ds.loadAvgFifteenDataSets,
       };
 
       ds.update = function(obj){
@@ -49,7 +49,7 @@ var piweek = {};
           }
           var nameDesc = obj.name.split(".")[0];
 
-          var metricName = obj.name.substring(obj.name.indexOf(".") +1).replace(".","_");
+          var metricName = obj.name.substring(obj.name.indexOf(".") +1);
           if (metricsDataSets.hasOwnProperty(metricName)){
               dataSet = metricsDataSets[metricName];
               dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
