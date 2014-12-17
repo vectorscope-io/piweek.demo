@@ -17,7 +17,7 @@ var seriesOptions = [
 
 var dataSets = initDataSets();
 var state = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
-var memState = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
+
 
 function initDataSets(){
 
@@ -26,6 +26,9 @@ function initDataSets(){
     ds.cpuData = []
     ds.swapUsedDataSets = new TimeSeries()
     ds.memUsedDataSets = new TimeSeries()
+    ds.loadAvgOneDataSets = new TimeSeries()
+    ds.loadAvgFiveDataSets = new TimeSeries()
+    ds.loadAvgFifteenDataSets = new TimeSeries()
 
     ds.update = function(obj){
         console.log(obj)
@@ -50,7 +53,14 @@ function initDataSets(){
             this.memUsedDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
         }else if (obj.name == nameDesc + ".swap.usedpercent"){
             this.swapUsedDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
+        }else if (obj.name == nameDesc + ".loadavg.one"){
+            this.loadAvgOneDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
+        }else if (obj.name == nameDesc + ".loadavg.five"){
+            this.loadAvgFiveDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
+        }else if (obj.name == nameDesc + ".loadavg.fifteen"){
+            this.loadAvgFifteenDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
         }
+
 
        if (state.cont == 4){
            this.cpuData[3].append(state.timestamp*1000, state.wait);
@@ -69,12 +79,12 @@ function tick(value) {
 
 
 function init() {
-  dataSets.cpuData = initHost('host1');
-  initMemData('host1')
+  dataSets.cpuData = initHost();
+  initMemData();
+  initLoadAvgData();
 }
    
 function initMemData(hostId){
-  // Build the timeline
   var timeline = new SmoothieChart(
     { maxValue:100.00, minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
         millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
@@ -82,16 +92,25 @@ function initMemData(hostId){
   
   timeline.addTimeSeries(dataSets.memUsedDataSets, blueSeries);
   timeline.addTimeSeries(dataSets.swapUsedDataSets, redSeries);
-  timeline.streamTo(document.getElementById(hostId + 'Mem'), millisPerPoint);
+  timeline.streamTo(document.getElementById('Mem'), millisPerPoint);
+}
+
+function initLoadAvgData(){
+  var timeline = new SmoothieChart(
+    { minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
+        millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
+      grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }});
+  
+  timeline.addTimeSeries(dataSets.loadAvgOneDataSets, blueSeries);
+  timeline.addTimeSeries(dataSets.loadAvgFiveDataSets, redSeries);
+  timeline.addTimeSeries(dataSets.loadAvgFifteenDataSets, greenSeries);
+
+  timeline.streamTo(document.getElementById('LoadAvg'), millisPerPoint);
 }
 
 
 function initHost(hostId) {
-
-  // Initialize an empty TimeSeries for each CPU.
   var cpuDataSets = [new TimeSeries(), new TimeSeries(), new TimeSeries(), new TimeSeries()];
-  var now = new Date().getTime();
-  // Build the timeline
   var timeline = new SmoothieChart(
     { maxValue:100.00, minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
         millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
@@ -100,7 +119,7 @@ function initHost(hostId) {
   for (var i = 0; i < cpuDataSets.length; i++) {
     timeline.addTimeSeries(cpuDataSets[i], seriesOptions[i]);
   }
-  timeline.streamTo(document.getElementById(hostId + 'Cpu'), millisPerPoint);
+  timeline.streamTo(document.getElementById('Cpu'), millisPerPoint);
   
   return cpuDataSets;
 }
