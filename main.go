@@ -20,6 +20,7 @@ import (
 var addr = flag.String("addr", ":8080", "http service address")
 var indexTempl = template.Must(template.ParseFiles("index.html"))
 var serverLoad = template.Must(template.ParseFiles("server-load.html"))
+var metrics3d = template.Must(template.ParseFiles("metrics3d.html"))
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("server home")
@@ -30,6 +31,16 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//indexTempl.Execute(w, r.Host)
 	serverLoad.Execute(w, r.Host)
+}
+
+func serveMetrics3d(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("serve metrics 3d")
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", 405)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	metrics3d.Execute(w, r.Host)
 }
 
 func main() {
@@ -46,6 +57,7 @@ func main() {
 	}()
 
 	r.HandleFunc("/metrics", serveHome)
+	r.HandleFunc("/metrics3d", serveMetrics3d)
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, serverStats.Metrics, w, r)
 	})
