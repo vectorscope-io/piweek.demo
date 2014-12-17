@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style type="text/css">
+<head>
+<style type="text/css">
       body {
         background-color: #111111;
         color: #eeeeee;
@@ -11,9 +11,54 @@
       h4 {
         margin-bottom: 1px;
       }
-    </style>
-    <script type="text/javascript" src="/static/smoothie.js"></script>
-    <script type="text/javascript" src="/static/server-load.js"></script>
+      .line{
+          display: block;
+          float: left;
+          width: 99%;
+          margin: 10px 0px;
+      }
+      .chart {
+          display : block;
+          float: left;
+          width: 60%;
+      }
+      .legend {
+          text-size: 12px;
+          display : block;
+          float: left;
+          width: 19%;
+          margin: 5px 2%;
+          font-weight: bold;
+      }
+      .lineColor{
+          width: 5em;
+          display: inline-block;
+      }
+      .legendText {
+          margin: 10px 20px;
+          width: 90px;
+          display: inline-block;
+      }
+      .red {
+          border: 2px solid red;
+      }
+      .green {
+          border: 2px solid lime;
+      }
+      .blue {
+          border: 2px solid blue;
+      }
+      .yellow {
+          border: 2px solid yellow;
+      }
+      .title {
+          display: block;
+          width: 99%;
+          border-bottom: 1px solid white;
+      }
+</style>
+<script type="text/javascript" src="/static/smoothie.js"></script>
+<script type="text/javascript" src="/static/server-load.js"></script>
 
 <script>
 var conn;
@@ -31,13 +76,23 @@ if (window["WebSocket"]) {
 }
 </script>
   
-    
 </head>
-  <body onload="init()">
-
-    <h1>CPU Load</h1>
-    <canvas id="host1Cpu" width="1000" height="200"></canvas>
-    <h1>Mem</h1>
-    <canvas id="host1Mem" width="1000" height="100"></canvas>
+<body onload="init()">
+  <div class="line">
+    <h4 class="title">CPU load</h4>
+    <div class="chart"><canvas id="host1Cpu" width="1000" height="200"></canvas></div>
+    <div class="legend"><span class="legendText">CPU user</span><hr class="lineColor red"/></div>
+    <div class="legend"><span class="legendText">CPU state</span><hr class="lineColor green"/></div>
+    <div class="legend"><span class="legendText">CPU stolen</span><hr class="lineColor blue"/></div>
+    <div class="legend"><span class="legendText">CPU wait</span><hr class="lineColor yellow"/></div>
+  </div>
+  <div class="line">
+    <h4 class="title">Memory</h4>
+    <div class="chart"><canvas id="host1Mem" width="1000" height="100"></canvas></div>
+    <div class="legend"><span class="legendText">CPU user</span><hr class="lineColor red"/></div>
+    <div class="legend"><span class="legendText">CPU state</span><hr class="lineColor green"/></div>
+    <div class="legend"><span class="legendText">CPU stolen</span><hr class="lineColor blue"/></div>
+    <div class="legend"><span class="legendText">CPU wait</span><hr class="lineColor yellow"/></div>
+  </div>
   </body>
 </html>
