@@ -4,10 +4,6 @@
 
 package main
 
-import (
-	"github.com/kr/pretty"
-)
-
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type WSHub struct {
@@ -43,7 +39,6 @@ func (h *WSHub) run() {
 				close(c.send)
 			}
 		case m := <-h.broadcast:
-			pretty.Println("Broadacst", string(m))
 			for c := range h.connections {
 				select {
 				case c.send <- m:
