@@ -54,23 +54,22 @@ var piweek = {};
               dataSet = metricsDataSets[metricName];
               dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
           } else {
-            if (obj.name == nameDesc + ".cpu.wait") {
+            if (metricName == "cpu.wait") {
                 state.cont = state.cont + 1;
                 state.wait = parseFloat(obj.value, 10);
-            }else if (obj.name == nameDesc + ".cpu.stolen") {
+            }else if (metricName == "cpu.stolen") {
                 state.cont = state.cont + 1;
                 state.stolen = parseFloat(obj.value, 10);
-            }else if (obj.name == nameDesc + ".cpu.sys") {
+            }else if (metricName == "cpu.sys") {
                 state.cont = state.cont + 1;
                 state.sys = parseFloat(obj.value, 10);
-            }else if (obj.name == nameDesc + ".cpu.user") {
+            }else if (metricName == "cpu.user") {
                 state.cont = state.cont + 1;
                 state.user = parseFloat(obj.value, 10);
             }
           }
 
-
-         if (state.cont == 4){
+          if (state.cont == 4){
              this.cpuData[3].append(state.timestamp*1000, state.wait);
              this.cpuData[2].append(state.timestamp*1000, state.wait + state.stolen);
              this.cpuData[1].append(state.timestamp*1000, state.wait + state.stolen + state.sys);
