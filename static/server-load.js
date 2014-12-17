@@ -24,44 +24,49 @@ var piweek = {};
 
   function initDataSets(){
 
-      var ds = {}
+      var ds = {};
 
-      ds.cpuData = []
-      ds.swapUsedDataSets = new TimeSeries()
-      ds.memUsedDataSets = new TimeSeries()
-      ds.loadAvgOneDataSets = new TimeSeries()
-      ds.loadAvgFiveDataSets = new TimeSeries()
-      ds.loadAvgFifteenDataSets = new TimeSeries()
+      ds.cpuData = [];
+      ds.swapUsedDataSets = new TimeSeries();
+      ds.memUsedDataSets = new TimeSeries();
+      ds.loadAvgOneDataSets = new TimeSeries();
+      ds.loadAvgFiveDataSets = new TimeSeries();
+      ds.loadAvgFifteenDataSets = new TimeSeries();
+
+      var metricsDataSets = {
+        "swap_usedpercent": ds.swapUsedDataSets,
+        "mem_actualusedpercent": ds.memUsedDataSets,
+        "loadavg_one": ds.loadAvgOneDataSets,
+        "loadavg_five": ds.loadAvgFiveDataSets,
+        "loadavg_fitfteen": ds.loadAvgFifteenDataSets,
+      };
 
       ds.update = function(obj){
-          console.log(obj)
+          console.log(obj);
           if (state.timestamp != obj.timestamp) {
               state.timestamp = obj.timestamp;
               state.cont = 0;
           }
           var nameDesc = obj.name.split(".")[0];
-          if (obj.name == nameDesc + ".cpu.wait") {
-              state.cont = state.cont + 1;
-              state.wait = parseFloat(obj.value, 10);
-          }else if (obj.name == nameDesc + ".cpu.stolen") {
-              state.cont = state.cont + 1;
-              state.stolen = parseFloat(obj.value, 10);
-          }else if (obj.name == nameDesc + ".cpu.sys") {
-              state.cont = state.cont + 1;
-              state.sys = parseFloat(obj.value, 10);
-          }else if (obj.name == nameDesc + ".cpu.user") {
-              state.cont = state.cont + 1;
-              state.user = parseFloat(obj.value, 10);
-          }else if (obj.name == nameDesc + ".mem.actualusedpercent"){
-              this.memUsedDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
-          }else if (obj.name == nameDesc + ".swap.usedpercent"){
-              this.swapUsedDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
-          }else if (obj.name == nameDesc + ".loadavg.one"){
-              this.loadAvgOneDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
-          }else if (obj.name == nameDesc + ".loadavg.five"){
-              this.loadAvgFiveDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
-          }else if (obj.name == nameDesc + ".loadavg.fifteen"){
-              this.loadAvgFifteenDataSets.append(obj.timestamp*1000, parseFloat(obj.value, 10));
+
+          var metricName = obj.name.substring(obj.name.indexOf(".") +1).replace(".","_");
+          if (metricsDataSets.hasOwnProperty(metricName)){
+              dataSet = metricsDataSets[metricName];
+              dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
+          } else {
+            if (obj.name == nameDesc + ".cpu.wait") {
+                state.cont = state.cont + 1;
+                state.wait = parseFloat(obj.value, 10);
+            }else if (obj.name == nameDesc + ".cpu.stolen") {
+                state.cont = state.cont + 1;
+                state.stolen = parseFloat(obj.value, 10);
+            }else if (obj.name == nameDesc + ".cpu.sys") {
+                state.cont = state.cont + 1;
+                state.sys = parseFloat(obj.value, 10);
+            }else if (obj.name == nameDesc + ".cpu.user") {
+                state.cont = state.cont + 1;
+                state.user = parseFloat(obj.value, 10);
+            }
           }
 
 
