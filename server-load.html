@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      body {
+        background-color: #111111;
+        color: #eeeeee;
+        font-family: tahoma, arial, sans-serif;
+        padding-left: 100px;
+      }
+      h4 {
+        margin-bottom: 1px;
+      }
+    </style>
+    <script type="text/javascript" src="/static/smoothie.js"></script>
+    <script type="text/javascript" src="/static/server-load.js"></script>
+
+<script>
+var conn;
+if (window["WebSocket"]) {
+        
+    conn = new WebSocket("ws://{{$}}/ws");
+    conn.onclose = function(evt) {
+           alert("Connection closed!")
+    }
+    conn.onmessage = function(evt) {
+            tick(evt.data)
+    }
+} else {
+        alert("<div><b>Your browser does not support WebSockets.</b></div>")
+}
+</script>
+    https://raw.githubusercontent.com/joewalnes/smoothie/master/smoothie.js
+    
+    </head>
+  <body onload="init()">
+
+    <h1>CPU Load</h1>
+
+    <h4>host1.example.com</h4>
+    <canvas id="host1Cpu" width="500" height="200"></canvas>
+
+    <h4>host2.example.com</h4>
+    <canvas id="host2Cpu" width="500" height="100"></canvas>
+
+    <h4>host3.example.com</h4>
+    <canvas id="host3Cpu" width="500" height="100"></canvas>
+
+    <h4>host4.example.com</h4>
+    <canvas id="host4Cpu" width="500" height="100"></canvas>
+
+    <p><em>This is fake data.</em></p>
+  </body>
+</html>
