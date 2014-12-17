@@ -42,7 +42,7 @@ func main() {
 		for metric := range serverStats.Metrics {
 			b, _ := json.Marshal(metric)
 			// broadcast del mensaje usando el hub
-			hub.broadcast <- b
+			hub.Broadcast(b)
 		}
 	}()
 

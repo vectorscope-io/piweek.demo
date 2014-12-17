@@ -43,7 +43,7 @@ func (h *WSHub) run() {
 				close(c.send)
 			}
 		case m := <-h.broadcast:
-			pretty.Println("EFA MESSAGE", string(m))
+			pretty.Println("Broadacst", string(m))
 			for c := range h.connections {
 				select {
 				case c.send <- m:
@@ -54,4 +54,16 @@ func (h *WSHub) run() {
 			}
 		}
 	}
+}
+
+func (h *WSHub) Register(c *connection) {
+	h.register <- c
+}
+
+func (h *WSHub) Unregister(c *connection) {
+	h.unregister <- c
+}
+
+func (h *WSHub) Broadcast(message []byte) {
+	h.broadcast <- message
 }
