@@ -26,7 +26,8 @@ svg {
 
 var n = 40,
     random = d3.random.normal(0, .2),
-    data = d3.range(n).map(random);
+    data = d3.range(n);
+    console.log(data)
 
 var margin = {top: 20, right: 20, bottom: 20, left: 40},
     width = 960 - margin.left - margin.right,
@@ -89,7 +90,7 @@ var path = svg.append("g")
 function tick(value) {
   var obj = JSON.parse(value);
   // push a new data point onto the back
-  console.log(obj)
+  //console.log(obj)
   if (obj.Name == "cpu.idle") {
     console.log("DATO", obj.Value)
     data.push(obj.Value);

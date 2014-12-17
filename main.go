@@ -19,6 +19,7 @@ import (
 
 var addr = flag.String("addr", ":8080", "http service address")
 var indexTempl = template.Must(template.ParseFiles("index.html"))
+var serverLoad = template.Must(template.ParseFiles("server-load.html"))
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("server home")
@@ -27,7 +28,8 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	indexTempl.Execute(w, r.Host)
+	//indexTempl.Execute(w, r.Host)
+	serverLoad.Execute(w, r.Host)
 }
 
 func main() {
@@ -49,6 +51,8 @@ func main() {
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(serverStats.Metrics, w, r)
 	})
+	//r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", r)
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
