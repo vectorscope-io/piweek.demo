@@ -19,7 +19,7 @@ import (
 
 var addr = flag.String("addr", ":8080", "http service address")
 var indexTempl = template.Must(template.ParseFiles("index.html"))
-var serverLoad = template.Must(template.ParseFiles("server-load.html"))
+var serverLoad = template.Must(template.ParseFiles("serverstats.html"))
 var metrics3d = template.Must(template.ParseFiles("metrics3d.html"))
 
 func serveHome(w http.ResponseWriter, r *http.Request) {

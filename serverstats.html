@@ -69,7 +69,7 @@ if (window["WebSocket"]) {
            alert("Connection closed!")
     }
     conn.onmessage = function(evt) {
-            serverStats.onWebsocketMessage(evt.data)
+            serverStats.onMessage(evt.data)
     }
 } else {
         alert("<div><b>Your browser does not support WebSockets.</b></div>")

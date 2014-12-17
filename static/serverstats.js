@@ -78,7 +78,7 @@ var serverStats = {};
   }
 
 
-  function onWebsocketMessage(message) {
+  function onMessage(message) {
     var obj = JSON.parse(message);
     console.log(obj);
     dataSets.update(obj);
@@ -132,6 +132,6 @@ var serverStats = {};
   }
 
   ns.init = init;
-  ns.onWebsocketMessage = onWebsocketMessage;
+  ns.onMessage = onMessage;
 
 }(serverStats));
