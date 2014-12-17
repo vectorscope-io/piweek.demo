@@ -58,7 +58,7 @@
       }
 </style>
 <script type="text/javascript" src="/static/smoothie.js"></script>
-<script type="text/javascript" src="/static/server-load.js"></script>
+<script type="text/javascript" src="/static/serverstats.js"></script>
 
 <script>
 var conn;
@@ -69,7 +69,7 @@ if (window["WebSocket"]) {
            alert("Connection closed!")
     }
     conn.onmessage = function(evt) {
-            piweek.tick(evt.data)
+            serverStats.onWebsocketMessage(evt.data)
     }
 } else {
         alert("<div><b>Your browser does not support WebSockets.</b></div>")
@@ -77,7 +77,7 @@ if (window["WebSocket"]) {
 </script>
 
 </head>
-<body onload="piweek.init()">
+<body onload="serverStats.init()">
   <div class="line">
     <h4 class="title">CPU</h4>
     <div class="chart"><canvas id="Cpu" width="1000" height="200"></canvas></div>

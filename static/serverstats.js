@@ -1,4 +1,4 @@
-var piweek = {};
+var serverStats = {};
 
 (function(ns){
 
@@ -42,7 +42,6 @@ var piweek = {};
       };
 
       ds.update = function(obj){
-          console.log(obj);
           if (state.timestamp != obj.timestamp) {
               state.timestamp = obj.timestamp;
               state.cont = 0;
@@ -79,8 +78,8 @@ var piweek = {};
   }
 
 
-  function tick(value) {
-    var obj = JSON.parse(value);
+  function onWebsocketMessage(message) {
+    var obj = JSON.parse(message);
     console.log(obj);
     dataSets.update(obj);
   }
@@ -133,6 +132,6 @@ var piweek = {};
   }
 
   ns.init = init;
-  ns.tick = tick;
+  ns.onWebsocketMessage = onWebsocketMessage;
 
-}(piweek));
+}(serverStats));
