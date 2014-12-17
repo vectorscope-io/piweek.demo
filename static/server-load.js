@@ -64,6 +64,7 @@ function initDataSets(){
 
 function tick(value) {
   var obj = JSON.parse(value);
+  console.log(obj);
   dataSets.update(obj);
 }
 
@@ -71,6 +72,8 @@ function tick(value) {
 function init() {
   dataSets.cpuData = initHost('host1');
   initMemData('host1')
+  //dataSets.loadAvg = initHost('host3');
+  // initHost('host4');
 }
    
 function initMemData(hostId){
