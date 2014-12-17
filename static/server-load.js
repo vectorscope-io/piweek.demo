@@ -67,14 +67,13 @@ var piweek = {};
                 state.cont = state.cont + 1;
                 state.user = parseFloat(obj.value, 10);
             }
+            if (state.cont == 4){
+               this.cpuData[3].append(state.timestamp*1000, state.wait);
+               this.cpuData[2].append(state.timestamp*1000, state.wait + state.stolen);
+               this.cpuData[1].append(state.timestamp*1000, state.wait + state.stolen + state.sys);
+               this.cpuData[0].append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
+            }
           }
-
-          if (state.cont == 4){
-             this.cpuData[3].append(state.timestamp*1000, state.wait);
-             this.cpuData[2].append(state.timestamp*1000, state.wait + state.stolen);
-             this.cpuData[1].append(state.timestamp*1000, state.wait + state.stolen + state.sys);
-             this.cpuData[0].append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
-         }
       }
       return ds; // revealing pattern - module pattern
   }
