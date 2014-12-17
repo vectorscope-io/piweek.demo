@@ -90,7 +90,8 @@ function initHost(hostId) {
   }
   // Build the timeline
   var timeline = new SmoothieChart(
-    { millisPerPixel: millisPerPixel, 
+    { maxValue:100.00, minValue: 0.00, 
+        millisPerPixel: millisPerPixel, 
       grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }});
   
   for (var i = 0; i < cpuDataSets.length; i++) {
