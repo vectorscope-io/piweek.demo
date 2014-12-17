@@ -13,6 +13,7 @@ var seriesOptions = [
 
 
 var dataSets = initDataSets();
+var state = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
 
 function initDataSets(){
 
@@ -21,34 +22,35 @@ function initDataSets(){
     ds.cpuData = []
 
     ds.update = function(obj){
-  
-        if (obj.name == "egiAlea.cpu.idle") {
-            //console.log("DATO", obj);
-            //console.log("DATO - time ", obj.timestamp);
-            //console.log("DATO - now ", new Date().getTime());
-            //console.log("DATO - value", obj.value);
-            this.cpuData[0].append(obj.timestamp*1000, obj.value);
-            //this.cpuData[0].append(new Date().getTime(), obj.value);
-            //console.log(obj)
-        }else if (obj.name == "egiAlea.cpu.user") {
-            //console.log("DATO", obj)
-            //console.log("DATO - time ", obj.Time)
-            //console.log("DATO - value", obj.Value)
-            this.cpuData[1].append(obj.timestamp*1000, obj.value);
-            //console.log(obj)
-        }else if (obj.name == "egiAlea.cpu.wait") {
-            //console.log("DATO", obj)
-            //console.log("DATO - time ", obj.Time)
-            //console.log("DATO - value", obj.Value)
-            this.cpuData[2].append(obj.timestamp*1000, obj.value);
-            //console.log(obj)
-        }else if (obj.name == "egiAlea.cpu.sys") {
-            //console.log("DATO", obj)
-            //console.log("DATO - time ", obj.Time)
-            //console.log("DATO - value", obj.Value)
-            this.cpuData[3].append(obj.timestamp*1000, obj.value);
-            //console.log(obj)
+ 
+        if (state.timestamp != obj.timestamp) {
+            state.timestamp = obj.timestamp;
+            state.cont = 0;
         }
+
+        if (obj.name == "egiAlea.cpu.wait") {
+            state.cont = state.cont + 1;
+            state.wait = parseFloat(obj.value, 10);
+        }else if (obj.name == "egiAlea.cpu.stolen") {
+            state.cont = state.cont + 1;
+            state.stolen = parseFloat(obj.value, 10);
+        }else if (obj.name == "egiAlea.cpu.sys") {
+            state.cont = state.cont + 1;
+            state.sys = parseFloat(obj.value, 10);
+        }else if (obj.name == "egiAlea.cpu.user") {
+            state.cont = state.cont + 1;
+            state.user = parseFloat(obj.value, 10);
+        }
+
+       if (state.cont == 4){
+           console.log(" values:",state);
+
+           this.cpuData[3].append(state.timestamp*1000, state.wait);
+           this.cpuData[2].append(state.timestamp*1000, state.wait + state.stolen);
+           this.cpuData[1].append(state.timestamp*1000, state.wait + state.stolen + state.sys);
+           this.cpuData[0].append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
+
+       }
     }
     return ds;
 }
