@@ -127,10 +127,8 @@ var serverStats = {};
       if (maxValue){
          params.maxValue = maxValue;
       }
-      var timeline = new SmoothieChart(params); 
-      return timeline;
+      return new SmoothieChart(params); 
   }
-
   
   ns.init = init;
   ns.onMessage = onMessage;
