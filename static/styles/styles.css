@@ -1,0 +1,54 @@
+      body {
+        background-color: #111111;
+        color: #eeeeee;
+        font-family: tahoma, arial, sans-serif;
+        padding-left: 100px;
+      }
+      h4 {
+        margin-bottom: 1px;
+      }
+      .line{
+          display: block;
+          float: left;
+          width: 99%;
+          margin: 10px 0px;
+      }
+      .chart {
+          display : block;
+          float: left;
+          width: 60%;
+      }
+      .legend {
+          text-size: 12px;
+          display : block;
+          float: left;
+          width: 19%;
+          margin: 5px 2%;
+          font-weight: bold;
+      }
+      .lineColor{
+          width: 5em;
+          display: inline-block;
+      }
+      .legendText {
+          margin: 10px 20px;
+          width: 90px;
+          display: inline-block;
+      }
+      .red {
+          border: 2px solid red;
+      }
+      .green {
+          border: 2px solid lime;
+      }
+      .blue {
+          border: 2px solid blue;
+      }
+      .yellow {
+          border: 2px solid yellow;
+      }
+      .title {
+          display: block;
+          width: 99%;
+          border-bottom: 1px solid white;
+      }
