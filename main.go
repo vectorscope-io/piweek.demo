@@ -59,7 +59,6 @@ func main() {
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, serverStats.Metrics, w, r)
 	})
-	//r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", r)
 	err := http.ListenAndServe(*addr, nil)
