@@ -79,8 +79,8 @@ var serverStats = {};
 
 
   function onMessage(message) {
+    console.log(message);
     var obj = JSON.parse(message);
-    console.log(obj);
     dataSets.update(obj);
   }
 
@@ -91,11 +91,7 @@ var serverStats = {};
   }
 
   function initMemData(hostId){
-    var timeline = new SmoothieChart(
-      { maxValue:100.00, minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
-          millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
-        grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }});
-
+    var timeline = createTimeline(100.00)
     timeline.addTimeSeries(dataSets.memUsedDataSets, blueSeries);
     timeline.addTimeSeries(dataSets.swapUsedDataSets, redSeries);
     timeline.streamTo(document.getElementById('Mem'), millisPerPoint);
@@ -103,11 +99,7 @@ var serverStats = {};
 
 
   function initLoadAvgData(){
-    var timeline = new SmoothieChart(
-      { minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
-          millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
-        grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }});
-
+    var timeline = createTimeline(null);
     timeline.addTimeSeries(dataSets.loadAvgOneDataSets, blueSeries);
     timeline.addTimeSeries(dataSets.loadAvgFiveDataSets, redSeries);
     timeline.addTimeSeries(dataSets.loadAvgFifteenDataSets, greenSeries);
@@ -115,14 +107,9 @@ var serverStats = {};
     timeline.streamTo(document.getElementById('LoadAvg'), millisPerPoint);
   }
 
-
   function initHost(hostId) {
     var cpuDataSets = [new TimeSeries(), new TimeSeries(), new TimeSeries(), new TimeSeries()];
-    var timeline = new SmoothieChart(
-      { maxValue:100.00, minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
-          millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
-        grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }});
-
+    var timeline = createTimeline(100.00);
     for (var i = 0; i < cpuDataSets.length; i++) {
       timeline.addTimeSeries(cpuDataSets[i], seriesOptions[i]);
     }
@@ -131,6 +118,19 @@ var serverStats = {};
     return cpuDataSets;
   }
 
+  
+  function createTimeline(maxValue) {
+      var params = {minValue: 0.00,labels:{fillStyle:'#fff',fontSize:14},
+                    millisPerPixel: millisPerPixel,timestampFormatter:SmoothieChart.timeFormatter,
+                    grid: { strokeStyle: '#555555', lineWidth: 1, millisPerLine: millisPerLine, verticalSections: 4 }};
+      if (maxValue){
+         params.maxValue = maxValue;
+      }
+      var timeline = new SmoothieChart(params); 
+      return timeline;
+  }
+
+  
   ns.init = init;
   ns.onMessage = onMessage;
 
