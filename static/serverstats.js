@@ -6,15 +6,19 @@ var serverStats = {};
   var millisPerPoint = 500
   var millisPerPixel = 20
 
-  var redSeries = { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 3 };
-  var greenSeries = { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 3 };
-  var blueSeries = { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 3 };
+  var colors = {red: '255, 0, 0', green: '0, 255, 0', blue: '0, 0, 255', yellow: '255, 255, 0'};
+
+
+ function createSeries(color, alpha){
+    return { strokeStyle: 'rgba('+ color +', 1)', fillStyle: 'rgba(' + color +', 0.2)', lineWidth: 3 };
+ }
+    
+  var redSeries = createSeries(colors.red,0.2);
+  var greenSeries = createSeries(colors.green,0.2);
+  var blueSeries = createSeries(colors.blue,0.2);
 
   var seriesOptions = [
-    { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.4)', lineWidth: 3 },
-    { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.4)', lineWidth: 3 },
-    { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.4)', lineWidth: 3 },
-    { strokeStyle: 'rgba(255, 255, 0, 1)', fillStyle: 'rgba(255, 255, 0, 0.4)', lineWidth: 3 }
+    createSeries(colors.red, 0.4), createSeries(colors.green, 0.4), createSeries(colors.blue, 0.4), createSeries(colors.yellow, 0.4)
   ];
 
 
@@ -79,7 +83,7 @@ var serverStats = {};
 
 
   function onMessage(message) {
-    console.log(message);
+    //console.log(message);
     var obj = JSON.parse(message);
     dataSets.update(obj);
   }
