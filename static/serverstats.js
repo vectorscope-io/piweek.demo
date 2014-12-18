@@ -87,7 +87,7 @@ var serverStats = {};
     dataSets.update(obj);
   }
 
-  function init(cpuElemId,memElemId,loadAvgElemId) {
+  function init(cpuElemId,loadAvgElemId, memElemId) {
     initCpuData(cpuElemId);
     initMemData(memElemId);
     initLoadAvgData(loadAvgElemId);

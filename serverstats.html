@@ -22,6 +22,7 @@ if (window["WebSocket"]) {
 
 </head>
 <body onload="serverStats.init('Cpu','LoadAvg','Mem')">
+  <h1>Vectorscope IO</h1>
   <div class="line">
     <h4 class="title">CPU</h4>
     <div class="chart"><canvas id="Cpu" width="1000" height="200"></canvas></div>
@@ -32,14 +33,14 @@ if (window["WebSocket"]) {
   </div>
   <div class="line">
     <h4 class="title">Load</h4>
-    <div class="chart"><canvas id="LoadAvg" width="1000" height="100"></canvas></div>
+    <div class="chart"><canvas id="LoadAvg" width="1000" height="150"></canvas></div>
     <div class="legend"><span class="legendText">Load avg1</span><hr class="lineColor blue"/></div>
     <div class="legend"><span class="legendText">Load avg5</span><hr class="lineColor red"/></div>
     <div class="legend"><span class="legendText">Load avg15</span><hr class="lineColor green"/></div>
   </div>
   <div class="line">
     <h4 class="title">Mem</h4>
-    <div class="chart"><canvas id="Mem" width="1000" height="100"></canvas></div>
+    <div class="chart"><canvas id="Mem" width="1000" height="150"></canvas></div>
     <div class="legend"><span class="legendText">Swap</span><hr class="lineColor red"/></div>
     <div class="legend"><span class="legendText">Mem</span><hr class="lineColor blue"/></div>
   </div>
