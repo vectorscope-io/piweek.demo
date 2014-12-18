@@ -11,7 +11,7 @@ Usage
     go get github/gorilla/websocket
     go run *.go
 
-Then navigate to `localhost:8080/metrics` or 'localhost:8080/stats3d` to fetch 
+Then navigate to `localhost:8080/metrics` or `localhost:8080/stats3d` to fetch 
 
 License
 -------
