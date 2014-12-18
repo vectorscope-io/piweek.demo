@@ -17,6 +17,6 @@ License
 -------
 
 AGPL -- Affero General Public License, Version 3
-Copyright ©2014 Eduardo Ferro, Enrique Paredes, Ruben Egiluze
+Copyright ©2014 Eduardo Ferro, Enrique Paredes, Ruben Egiluz
 
 Proudly brewed at [VII PIWEEK](http://www.piweek.com)
