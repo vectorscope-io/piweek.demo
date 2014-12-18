@@ -22,7 +22,7 @@ var serverLoad = template.Must(template.ParseFiles("serverstats.html"))
 var serverstats3d = template.Must(template.ParseFiles("serverstats3d.html"))
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("server home")
+	fmt.Println("server stats")
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
@@ -54,8 +54,8 @@ func main() {
 		}
 	}()
 
-	r.HandleFunc("/metrics", serveHome)
-	r.HandleFunc("/stats3d", serveStats3d)
+	r.HandleFunc("/serverstats", serveHome)
+	r.HandleFunc("/serverstats3d", serveStats3d)
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, serverStats.Metrics, w, r)
 	})
