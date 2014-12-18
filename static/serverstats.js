@@ -13,9 +13,12 @@ var serverStats = {};
   var greenSeries = createSeries(colors.green,0.2);
   var blueSeries = createSeries(colors.blue,0.2);
 
-  var cpuSeriesOptions = [
-    createSeries(colors.red, 0.4), createSeries(colors.green, 0.4), createSeries(colors.blue, 0.4), createSeries(colors.yellow, 0.4)
-  ];
+  var cpuSeriesOptions = {
+    "cpuWait": createSeries(colors.yello, 0.4), 
+    "cpuStolen": createSeries(colors.blue, 0.4), 
+    "cpuSys": createSeries(colors.green, 0.4), 
+    "cpuUser": createSeries(colors.red, 0.4)
+  };
 
  function createSeries(color, alpha){
     return { strokeStyle: 'rgba('+ color +', 1)', fillStyle: 'rgba(' + color +', 0.2)', lineWidth: 3 };
@@ -27,7 +30,6 @@ var serverStats = {};
 
       var ds = {};
 
-      ds.cpuData = [];
       ds.swapUsedDataSets = new TimeSeries();
       ds.memUsedDataSets = new TimeSeries();
       ds.loadAvgOneDataSets = new TimeSeries();
@@ -55,23 +57,23 @@ var serverStats = {};
               dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
           } else {
             if (metricName == "cpu.wait") {
-                state.cont = state.cont + 1;
+                state.cont += 1;
                 state.wait = parseFloat(obj.value, 10);
             }else if (metricName == "cpu.stolen") {
-                state.cont = state.cont + 1;
+                state.cont += 1;
                 state.stolen = parseFloat(obj.value, 10);
             }else if (metricName == "cpu.sys") {
-                state.cont = state.cont + 1;
+                state.cont += 1;
                 state.sys = parseFloat(obj.value, 10);
             }else if (metricName == "cpu.user") {
-                state.cont = state.cont + 1;
+                state.cont += 1;
                 state.user = parseFloat(obj.value, 10);
             }
             if (state.cont == 4){
-               this.cpuData[3].append(state.timestamp*1000, state.wait);
-               this.cpuData[2].append(state.timestamp*1000, state.wait + state.stolen);
-               this.cpuData[1].append(state.timestamp*1000, state.wait + state.stolen + state.sys);
-               this.cpuData[0].append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
+               this.cpuData.cpuWait.append(state.timestamp*1000, state.wait);
+               this.cpuData.cpuStolen.append(state.timestamp*1000, state.wait + state.stolen);
+               this.cpuData.cpuSys.append(state.timestamp*1000, state.wait + state.stolen + state.sys);
+               this.cpuData.cpuUser.append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
             }
           }
       }
@@ -80,7 +82,7 @@ var serverStats = {};
 
 
   function onMessage(message) {
-    //console.log(message);
+    console.log(message);
     var obj = JSON.parse(message);
     dataSets.update(obj);
   }
@@ -109,11 +111,12 @@ var serverStats = {};
   }
 
   function initCpuData(elemId) {
-    var cpuDataSets = [new TimeSeries(), new TimeSeries(), new TimeSeries(), new TimeSeries()];
+    var cpuDataSets = { "cpuWait": new TimeSeries(), "cpuStolen": new TimeSeries(), "cpuSys": new TimeSeries(), "cpuUser": new TimeSeries()};
     var timeline = createTimeline(100.00);
-    for (var i = 0; i < cpuDataSets.length; i++) {
-      timeline.addTimeSeries(cpuDataSets[i], cpuSeriesOptions[i]);
-    }
+    timeline.addTimeSeries(cpuDataSets.cpuWait,cpuSeriesOptions.cpuWait);
+    timeline.addTimeSeries(cpuDataSets.cpuStolen,cpuSeriesOptions.cpuStolen);
+    timeline.addTimeSeries(cpuDataSets.cpuSys,cpuSeriesOptions.cpuSys);
+    timeline.addTimeSeries(cpuDataSets.cpuUser,cpuSeriesOptions.cpuUser);
     timeline.streamTo(document.getElementById(elemId), millisPerPoint);
 
     dataSets.cpuData = cpuDataSets;
