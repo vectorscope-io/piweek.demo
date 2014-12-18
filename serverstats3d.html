@@ -6,7 +6,7 @@
     <style>
         html, body {border:0; padding:0}
         canvas{ width: 100%; heigth: 100%}
-        .graph{ width: 300px; height: 300px}
+        .graph{ width: 300px; height: 300px; float: left}
     </style>
 </head>
 <body>
@@ -21,7 +21,9 @@
                 console.warn("Connection closed!")
             }
             conn.onmessage = function(evt) {
-                window.dispatchEvent(new CustomEvent('wsMessage', evt.data));
+                window.dispatchEvent(new CustomEvent('wsMessage', {
+                    'detail': JSON.parse(evt.data)
+                }));
             }
         }else {
             alert("Your browser does not support WebSockets. :(");
