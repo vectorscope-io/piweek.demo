@@ -1,9 +1,9 @@
 /* global THREE */
-var Renderer = function(container, scene, camera){
+var Renderer = function(container, scene, camera, background){
     'use strict';
     var renderer = new THREE.WebGLRenderer({antialias: true});
     // renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xf0f0f0);
+    renderer.setClearColor(background);
     function render(){
         container.dispatchEvent(new CustomEvent('render'));
         requestAnimationFrame(render);
@@ -25,15 +25,21 @@ var Camera = function (width, height){
     return camera;
 };
 
-var basicLineGraph = function(container, hexColor, namespace){
+var viewport = function(container, callback){
     'use strict';
     var width = container.clientWidth;
     var height = container.clientHeight;
+
     var scene = Scene();
     var camera = Camera(width, height);
-    var renderer = Renderer(container, scene, camera);
+    var renderer = Renderer(container, scene, camera, 0xfdfdfd);
     container.appendChild( renderer.domElement );
 
+    callback(container, scene);
+};
+
+var basicLineGraph = function(hexColor, namespace, width, height, scene){
+    'use strict';
     var padding = 20;
 
     var domain = {
@@ -64,12 +70,31 @@ var basicLineGraph = function(container, hexColor, namespace){
         geometry.vertices.push(point.clone(), step.clone());
         var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: hexColor}));
         line_handler.add(line);
+        if (line_handler.children.length >= 10) { line_handler.remove(line.children[0]); }
         line_handler.position.x = -step.x;
         point = step;
         time = data.timestamp;
     });
 };
 
-basicLineGraph(document.querySelector('.graph[data-metric="cpu"]'), 0xff0000, 'iknite-xps.cpu.idle');
-basicLineGraph(document.querySelector('.graph[data-metric="mem"]'), 0x00ff00, 'iknite-xps.cpu.stolen');
-// basicLineGraph(document.querySelector('.graph[data-metric="load"]'), 0x0000ff, 'iknite-xps.loadavg');
+viewport(document.querySelector('.graph[data-metric="cpu"]'), function(container, scene){
+    'use strict';
+    basicLineGraph(0xff0000, 'iknite-xps.cpu.user', container.clientWidth, container.clientHeight, scene);
+    basicLineGraph(0x00ff00, 'iknite-xps.cpu.sys', container.clientWidth, container.clientHeight, scene);
+    basicLineGraph(0x0000ff, 'iknite-xps.cpu.stolen', container.clientWidth, container.clientHeight, scene);
+});
+
+// viewport(document.querySelector('.graph[data-metric="mem"]'), function(container, scene){
+//     'use strict';
+//     basicLineGraph(0xff0000, 'iknite-xps.cpu.user', container.clientWidth, container.clientHeight, scene);
+//     basicLineGraph(0x00ff00, 'iknite-xps.cpu.sys', container.clientWidth, container.clientHeight, scene);
+//     basicLineGraph(0x0000ff, 'iknite-xps.cpu.stolen', container.clientWidth, container.clientHeight, scene);
+// });
+
+
+// viewport(document.querySelector('.graph[data-metric="load"]'), function(container, scene){
+//     'use strict';
+//     basicLineGraph(0xff0000, 'iknite-xps.cpu.user', container.clientWidth, container.clientHeight, scene);
+//     basicLineGraph(0x00ff00, 'iknite-xps.cpu.sys', container.clientWidth, container.clientHeight, scene);
+//     basicLineGraph(0x0000ff, 'iknite-xps.cpu.stolen', container.clientWidth, container.clientHeight, scene);
+// });
