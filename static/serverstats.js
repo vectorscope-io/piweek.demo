@@ -7,8 +7,62 @@ var serverStats = {};
   var millisPerPixel = 20
 
   var colors = {red: '255, 0, 0', green: '0, 255, 0', blue: '0, 0, 255', yellow: '255, 255, 0'};
-  var state = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
-    
+
+  function createCpuState(){
+      var timestamp = null;
+      var cont = 0;
+      var wait = null;
+      var stolen = null;
+      var sys = null;
+      var user = null;
+
+      return {
+          incCont: function(){
+            cont += 1; 
+          },
+          resetCont: function(){
+              cont = 0
+          },
+          isAllData: function(){
+              return cont == 4;
+          },
+          getTime: function(){
+              return timestamp * 1000;
+          },
+          setTime: function(time){
+              timestamp = time; 
+          },
+          isSameTime: function(time){
+              return timestamp == time;
+          },
+          setWait: function(value){
+              wait = value; 
+          },
+          setStolen: function(value){
+              stolen = value;
+          },
+          setSys: function(value){
+              sys = value;
+          },
+          setUser: function(value){
+              user = value;
+          },
+          getWait: function(){
+              return wait;
+          },
+          getWaitAndStolen: function(){
+              return wait + stolen;
+          },
+          getWaitStolenSys: function(){
+              return wait + stolen + sys;
+          },
+          getAll: function(){
+              return wait + stolen + sys + user;
+          }
+      }
+  };
+
+  var cpuState = createCpuState();
   var redSeries = createSeries(colors.red,0.2);
   var greenSeries = createSeries(colors.green,0.2);
   var blueSeries = createSeries(colors.blue,0.2);
@@ -43,11 +97,11 @@ var serverStats = {};
         "loadavg.five": ds.loadAvgFiveDataSets,
         "loadavg.fitfteen": ds.loadAvgFifteenDataSets,
       };
-
       ds.update = function(obj){
-          if (state.timestamp != obj.timestamp) {
-              state.timestamp = obj.timestamp;
-              state.cont = 0;
+          console.log(cpuState.isSameTime(obj.timestamp));
+          if (!cpuState.isSameTime(obj.timestamp)){
+              cpuState.setTime(obj.timestamp);
+              cpuState.resetCont();
           }
           var nameDesc = obj.name.split(".")[0];
 
@@ -57,23 +111,23 @@ var serverStats = {};
               dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
           } else {
             if (metricName == "cpu.wait") {
-                state.cont += 1;
-                state.wait = parseFloat(obj.value, 10);
+                cpuState.incCont();
+                cpuState.setWait(parseFloat(obj.value,10));
             }else if (metricName == "cpu.stolen") {
-                state.cont += 1;
-                state.stolen = parseFloat(obj.value, 10);
+                cpuState.incCont();
+                cpuState.setStolen(parseFloat(obj.value, 10));
             }else if (metricName == "cpu.sys") {
-                state.cont += 1;
-                state.sys = parseFloat(obj.value, 10);
+                cpuState.incCont();
+                cpuState.setSys(parseFloat(obj.value, 10));
             }else if (metricName == "cpu.user") {
-                state.cont += 1;
-                state.user = parseFloat(obj.value, 10);
+                cpuState.incCont();
+                cpuState.setUser(parseFloat(obj.value,10));
             }
-            if (state.cont == 4){
-               this.cpuData.cpuWait.append(state.timestamp*1000, state.wait);
-               this.cpuData.cpuStolen.append(state.timestamp*1000, state.wait + state.stolen);
-               this.cpuData.cpuSys.append(state.timestamp*1000, state.wait + state.stolen + state.sys);
-               this.cpuData.cpuUser.append(state.timestamp*1000, state.wait + state.stolen + state.sys + state.user);
+            if (cpuState.isAllData()){
+               this.cpuData.cpuWait.append(cpuState.getTime(), cpuState.getWait());
+               this.cpuData.cpuStolen.append(cpuState.getTime(), cpuState.getWaitAndStolen());
+               this.cpuData.cpuSys.append(cpuState.getTime(), cpuState.getWaitStolenSys());
+               this.cpuData.cpuUser.append(cpuState.getTime(), cpuState.getAll());
             }
           }
       }
@@ -82,7 +136,7 @@ var serverStats = {};
 
 
   function onMessage(message) {
-    console.log(message);
+    //console.log(message);
     var obj = JSON.parse(message);
     dataSets.update(obj);
   }
