@@ -16,15 +16,15 @@
       .chart {
           display : block;
           float: left;
-          width: 60%;
+          width: 1000px;
       }
       .legend {
           text-size: 12px;
           display : block;
           float: left;
-          width: 19%;
           margin: 5px 2%;
           font-weight: bold;
+          width: 19%;
       }
       .lineColor{
           width: 5em;
