@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+      body {
+        background-color: #111111;
+        color: #eeeeee;
+        font-family: tahoma, arial, sans-serif;
+        padding-left: 100px;
+      }
+      h4 {
+        margin-bottom: 1px;
+      }
+      .line{
+          display: block;
+          float: left;
+          width: 99%;
+          margin: 10px 0px;
+      }
+      .chart {
+          display : block;
+          float: left;
+          width: 60%;
+      }
+      .legend {
+          text-size: 12px;
+          display : block;
+          float: left;
+          width: 19%;
+          margin: 5px 2%;
+          font-weight: bold;
+      }
+      .lineColor{
+          width: 5em;
+          display: inline-block;
+      }
+      .legendText {
+          margin: 10px 20px;
+          width: 90px;
+          display: inline-block;
+      }
+      .red {
+          border: 2px solid red;
+      }
+      .green {
+          border: 2px solid lime;
+      }
+      .blue {
+          border: 2px solid blue;
+      }
+      .yellow {
+          border: 2px solid yellow;
+      }
+      .title {
+          display: block;
+          width: 99%;
+          border-bottom: 1px solid white;
+      }
+</style>
+<script type="text/javascript" src="/static/smoothie.js"></script>
+<script type="text/javascript" src="/static/serverstats.js"></script>
+
+<script>
+var conn;
+if (window["WebSocket"]) {
+
+    conn = new WebSocket("ws://{{$}}/ws");
+    conn.onclose = function(evt) {
+           alert("Connection closed!")
+    }
+    conn.onmessage = function(evt) {
+            serverStats.onMessage(evt.data)
+    }
+} else {
+        alert("<div><b>Your browser does not support WebSockets.</b></div>")
+}
+</script>
+
+</head>
+<body onload="serverStats.init()">
+  <div class="line">
+    <h4 class="title">CPU</h4>
+    <div class="chart"><canvas id="Cpu" width="1000" height="200"></canvas></div>
+    <div class="legend"><span class="legendText">CPU user</span><hr class="lineColor red"/></div>
+    <div class="legend"><span class="legendText">CPU state</span><hr class="lineColor green"/></div>
+    <div class="legend"><span class="legendText">CPU stolen</span><hr class="lineColor blue"/></div>
+    <div class="legend"><span class="legendText">CPU wait</span><hr class="lineColor yellow"/></div>
+  </div>
+  <div class="line">
+    <h4 class="title">Load</h4>
+    <div class="chart"><canvas id="LoadAvg" width="1000" height="100"></canvas></div>
+    <div class="legend"><span class="legendText">CPU user</span><hr class="lineColor red"/></div>
+    <div class="legend"><span class="legendText">CPU state</span><hr class="lineColor green"/></div>
+    <div class="legend"><span class="legendText">CPU stolen</span><hr class="lineColor blue"/></div>
+    <div class="legend"><span class="legendText">CPU wait</span><hr class="lineColor yellow"/></div>
+  </div>
+  <div class="line">
+    <h4 class="title">Mem</h4>
+    <div class="chart"><canvas id="Mem" width="1000" height="100"></canvas></div>
+    <div class="legend"><span class="legendText">CPU user</span><hr class="lineColor red"/></div>
+    <div class="legend"><span class="legendText">CPU state</span><hr class="lineColor green"/></div>
+    <div class="legend"><span class="legendText">CPU stolen</span><hr class="lineColor blue"/></div>
+    <div class="legend"><span class="legendText">CPU wait</span><hr class="lineColor yellow"/></div>
+  </div>
+  </body>
+</html>
