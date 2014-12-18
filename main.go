@@ -20,7 +20,7 @@ import (
 var addr = flag.String("addr", ":8080", "http service address")
 var indexTempl = template.Must(template.ParseFiles("index.html"))
 var serverLoad = template.Must(template.ParseFiles("serverstats.html"))
-var metrics3d = template.Must(template.ParseFiles("metrics3d.html"))
+var serverstats3d = template.Must(template.ParseFiles("serverstats3d.html"))
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("server home")
@@ -33,14 +33,14 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 	serverLoad.Execute(w, r.Host)
 }
 
-func serveMetrics3d(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("serve metrics 3d")
+func serveStats3d(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("serve stats 3d")
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	metrics3d.Execute(w, r.Host)
+	serverstats3d.Execute(w, r.Host)
 }
 
 func main() {
@@ -57,7 +57,7 @@ func main() {
 	}()
 
 	r.HandleFunc("/metrics", serveHome)
-	r.HandleFunc("/metrics3d", serveMetrics3d)
+	r.HandleFunc("/stats3d", serveStats3d)
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, serverStats.Metrics, w, r)
 	})
