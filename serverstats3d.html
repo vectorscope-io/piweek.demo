@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <title>My first shiny 3d graph</title>
     <script type="text/javascript" src="/static/components/three.js"></script>
-    <script type="text/javascript" src="/static/serverstats3d.js"></script>
-    <script>
-        if (!window.WebSocket) {
-            alert("Your browser does not support WebSockets. :(")
-            return;
-        }
-
-        var conn = new WebSocket("ws://{{$}}/ws"); // `{{$}}` is rendered by go.
-        conn.onclose = function(evt) { alert("Connection closed!") }
-        conn.onmessage = function(evt) { serverStats.onMessage(evt.data) }
-    </script>
+    <style>
+        html, body {border:0; padding:0}
+        canvas{ width: 100%; heigth: 100%}
+        .graph{ width: 300px; height: 300px}
+    </style>
 </head>
 <body>
     <div class="graph" data-metric="cpu"></div>
     <div class="graph" data-metric="mem"></div>
     <div class="graph" data-metric="load"></div>
+    <script type="text/javascript" src="/static/serverstats3d.js"></script>
+    <script>
+        if (!!window.WebSocket) {
+            var conn = new WebSocket("ws://{{$}}/ws"); // `{{$}}` is transtlated by go.
+            conn.onclose = function(evt) {
+                console.warn("Connection closed!")
+            }
+            conn.onmessage = function(evt) {
+                window.dispatchEvent(new CustomEvent('wsMessage', evt.data));
+            }
+        }else {
+            alert("Your browser does not support WebSockets. :(");
+        }
+    </script>
 </body>
 </html>
