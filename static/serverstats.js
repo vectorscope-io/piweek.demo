@@ -7,25 +7,22 @@ var serverStats = {};
   var millisPerPixel = 20
 
   var colors = {red: '255, 0, 0', green: '0, 255, 0', blue: '0, 0, 255', yellow: '255, 255, 0'};
-
-
- function createSeries(color, alpha){
-    return { strokeStyle: 'rgba('+ color +', 1)', fillStyle: 'rgba(' + color +', 0.2)', lineWidth: 3 };
- }
+  var state = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
     
   var redSeries = createSeries(colors.red,0.2);
   var greenSeries = createSeries(colors.green,0.2);
   var blueSeries = createSeries(colors.blue,0.2);
 
-  var seriesOptions = [
+  var cpuSeriesOptions = [
     createSeries(colors.red, 0.4), createSeries(colors.green, 0.4), createSeries(colors.blue, 0.4), createSeries(colors.yellow, 0.4)
   ];
 
+ function createSeries(color, alpha){
+    return { strokeStyle: 'rgba('+ color +', 1)', fillStyle: 'rgba(' + color +', 0.2)', lineWidth: 3 };
+ }
 
   var dataSets = initDataSets();
-  var state = {timestamp: null, cont:0, wait:null, stolen:null, sys:null, user:null}
-
-
+  
   function initDataSets(){
 
       var ds = {};
@@ -88,38 +85,38 @@ var serverStats = {};
     dataSets.update(obj);
   }
 
-  function init() {
-    dataSets.cpuData = initHost();
-    initMemData();
-    initLoadAvgData();
+  function init(cpuElemId,memElemId,loadAvgElemId) {
+    initCpuData(cpuElemId);
+    initMemData(memElemId);
+    initLoadAvgData(loadAvgElemId);
   }
 
-  function initMemData(hostId){
+  function initMemData(elemId){
     var timeline = createTimeline(100.00)
     timeline.addTimeSeries(dataSets.memUsedDataSets, blueSeries);
     timeline.addTimeSeries(dataSets.swapUsedDataSets, redSeries);
-    timeline.streamTo(document.getElementById('Mem'), millisPerPoint);
+    timeline.streamTo(document.getElementById(elemId), millisPerPoint);
   }
 
 
-  function initLoadAvgData(){
+  function initLoadAvgData(elemId){
     var timeline = createTimeline(null);
     timeline.addTimeSeries(dataSets.loadAvgOneDataSets, blueSeries);
     timeline.addTimeSeries(dataSets.loadAvgFiveDataSets, redSeries);
     timeline.addTimeSeries(dataSets.loadAvgFifteenDataSets, greenSeries);
 
-    timeline.streamTo(document.getElementById('LoadAvg'), millisPerPoint);
+    timeline.streamTo(document.getElementById(elemId), millisPerPoint);
   }
 
-  function initHost(hostId) {
+  function initCpuData(elemId) {
     var cpuDataSets = [new TimeSeries(), new TimeSeries(), new TimeSeries(), new TimeSeries()];
     var timeline = createTimeline(100.00);
     for (var i = 0; i < cpuDataSets.length; i++) {
-      timeline.addTimeSeries(cpuDataSets[i], seriesOptions[i]);
+      timeline.addTimeSeries(cpuDataSets[i], cpuSeriesOptions[i]);
     }
-    timeline.streamTo(document.getElementById('Cpu'), millisPerPoint);
+    timeline.streamTo(document.getElementById(elemId), millisPerPoint);
 
-    return cpuDataSets;
+    dataSets.cpuData = cpuDataSets;
   }
 
   

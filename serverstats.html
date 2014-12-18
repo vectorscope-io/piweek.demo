@@ -21,7 +21,7 @@ if (window["WebSocket"]) {
 </script>
 
 </head>
-<body onload="serverStats.init()">
+<body onload="serverStats.init('Cpu','LoadAvg','Mem')">
   <div class="line">
     <h4 class="title">CPU</h4>
     <div class="chart"><canvas id="Cpu" width="1000" height="200"></canvas></div>
