@@ -68,7 +68,8 @@ var basicLineGraph = function(hexColor, namespace, container, scene, depth){
         step.z = -depth * padding;
         var geometry = new THREE.Geometry();
         geometry.vertices.push(point.clone(), step.clone());
-        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: hexColor}));
+        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: hexColor, linewidth: 3}));
+
         if(point.x > 0) {line_handler.add(line);}
         if (line_handler.children.length >= 10) { line_handler.remove(line.children[0]); }
         line_handler.position.x = -step.x;
@@ -94,9 +95,9 @@ var cube = function (scene, size, color){
     return cube;
 };
 
-viewport(document.querySelector('.graph[data-metric="cpu"]'), 0x333333, function(container, scene){
+viewport(document.querySelector('.graph[data-metric="cpu"]'), 0x000000, function(container, scene){
     'use strict';
-    for (var i =0, l =10; i < l; i++){
+    for (var i =0, l =5; i < l; i++){
         basicLineGraph(0xff0000, 'iknite-xps.cpu.user', container, scene, i - (l/2));
         basicLineGraph(0x00ff00, 'iknite-xps.cpu.sys', container, scene, i - (l/2));
         basicLineGraph(0x0000ff, 'iknite-xps.cpu.stolen', container, scene, i - (l/2));
