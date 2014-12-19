@@ -3,16 +3,14 @@
 <head>
     <title>My first shiny 3d graph</title>
     <script type="text/javascript" src="/static/components/three.js"></script>
+    <script type="text/javascript" src="/static/components/THREE.OrbitControls.js"></script>
     <style>
-        html, body {border:0; padding:0}
+        html, body, * {border:0; padding:0; margin: 0}
         canvas{ width: 100%; heigth: 100%}
-        .graph{ width: 300px; height: 300px; float: left}
+        /* .graph{ width: 300px; height: 300px; float: left} */
     </style>
 </head>
-<body>
-    <div class="graph" data-metric="cpu"></div>
-    <div class="graph" data-metric="mem"></div>
-    <div class="graph" data-metric="load"></div>
+<body class="graph" data-metric="cpu">
     <script type="text/javascript" src="/static/serverstats3d.js"></script>
     <script>
         if (!!window.WebSocket) {
