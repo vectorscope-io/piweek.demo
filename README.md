@@ -6,9 +6,9 @@ Realtime graphic visualization Demo.
 Usage
 -----
 
-    go get github/aleasoluciones/serverstat
-    go get github/gorilla/mux
-    go get github/gorilla/websocket
+    go get github.com/aleasoluciones/serverstat
+    go get github.com/gorilla/mux
+    go get github.com/gorilla/websocket
     go run *.go
 
 Then navigate to `localhost:8080/serverstats` or `localhost:8080/serverstats3d` to fetch 
