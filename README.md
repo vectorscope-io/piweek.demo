@@ -6,7 +6,7 @@ Realtime graphic visualization Demo.
 Usage
 -----
 
-    go get github.com/aleasoluciones/serverstat
+    go get github.com/aleasoluciones/serverstats
     go get github.com/gorilla/mux
     go get github.com/gorilla/websocket
     go run *.go
