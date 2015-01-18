@@ -92,34 +92,39 @@ var serverStats = {};
 
       var metricsDataSets = {
         "swap.usedpercent": ds.swapUsedDataSets,
+        "local.swap.used": ds.swapUsedDataSets,
         "mem.actualusedpercent": ds.memUsedDataSets,
+        "local.mem.actualusedpercent": ds.memUsedDataSets,
         "loadavg.one": ds.loadAvgOneDataSets,
+        "local.loadavg.one": ds.loadAvgOneDataSets,
         "loadavg.five": ds.loadAvgFiveDataSets,
+        "local.loadavg.five": ds.loadAvgFiveDataSets,
         "loadavg.fitfteen": ds.loadAvgFifteenDataSets,
+        "local.loadavg.fitfteen": ds.loadAvgFifteenDataSets,
       };
       ds.update = function(obj){
-          console.log(cpuState.isSameTime(obj.timestamp));
+          //console.log(cpuState.isSameTime(obj.timestamp));
           if (!cpuState.isSameTime(obj.timestamp)){
               cpuState.setTime(obj.timestamp);
               cpuState.resetCont();
           }
           var nameDesc = obj.name.split(".")[0];
-
+          var name = obj.name;
           var metricName = obj.name.substring(obj.name.indexOf(".") +1);
           if (metricsDataSets.hasOwnProperty(metricName)){
               dataSet = metricsDataSets[metricName];
               dataSet.append(obj.timestamp*1000, parseFloat(obj.value, 10));
           } else {
-            if (metricName == "cpu.wait") {
+            if (name.indexOf("cpu.wait") > -1 ) {
                 cpuState.incCont();
                 cpuState.setWait(parseFloat(obj.value,10));
-            }else if (metricName == "cpu.stolen") {
+            }else if (name.indexOf("cpu.stolen") > -1) {
                 cpuState.incCont();
                 cpuState.setStolen(parseFloat(obj.value, 10));
-            }else if (metricName == "cpu.sys") {
+            }else if (name.indexOf("cpu.sys") > -1) {
                 cpuState.incCont();
                 cpuState.setSys(parseFloat(obj.value, 10));
-            }else if (metricName == "cpu.user") {
+            }else if (name.indexOf("cpu.user") > -1)  {
                 cpuState.incCont();
                 cpuState.setUser(parseFloat(obj.value,10));
             }
