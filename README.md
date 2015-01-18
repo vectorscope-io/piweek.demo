@@ -13,6 +13,11 @@ Usage
 
 Then navigate to `localhost:8080/serverstats` or `localhost:8080/serverstats3d` to fetch 
 
+Errors
+-------
+
+If you have problems to execute the project in Mac OS environment, take a look to this [gist](https://gist.github.com/regiluze/f0fcd10a08a6bf319aba)
+
 License
 -------
 
