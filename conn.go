@@ -6,15 +6,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gorilla/websocket"
 	// "math/rand"
-	"net/http"
 	"time"
 	//	"strconv"
 	//	"reflect"
-	"github.com/aleasoluciones/serverstats"
 )
 
 const (
@@ -96,22 +93,4 @@ func (c *connection) writePump() {
 			}
 		}
 	}
-}
-
-// serverWs handles websocket requests from the peer.
-func serveWs(hub *WSHub, metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	c := &connection{send: make(chan []byte, 256), ws: ws}
-	hub.Register(c)
-
-	go c.writePump()
-	c.readPump(hub)
 }
