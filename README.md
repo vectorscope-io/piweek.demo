@@ -7,6 +7,7 @@ Usage
 -----
 
     go get github.com/aleasoluciones/serverstats
+    go get github.com/regiluze/httpserver
     go get github.com/gorilla/mux
     go get github.com/gorilla/websocket
     go run *.go
