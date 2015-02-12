@@ -9,7 +9,8 @@ import (
 	"github.com/regiluze/httpserver"
 )
 
-var addr = flag.String("addr", "8080", "http service address")
+var addr = flag.String("addr", "0.0.0.0", "http service address")
+var port = flag.String("port", "8080", "http service port")
 
 type Server struct{}
 
@@ -30,7 +31,7 @@ func (s *Server) start() {
 		}
 	}()
 
-	httpserver := httpserver.NewHttpServer("0.0.0.0", *addr)
+	httpserver := httpserver.NewHttpServer(*addr, *port)
 	httpserver.DeployAtBase(serverStatsApp)
 	err := httpserver.Start()
 	if err != nil {
