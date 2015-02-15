@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/gorilla/mux"
-
 	"github.com/aleasoluciones/serverstats"
 	"github.com/regiluze/httpserver"
 )
@@ -64,11 +62,14 @@ func (ssh *ServerStatsHandler) serveWs(hub *WSHub, metrics chan serverstats.Metr
 	c.readPump(hub)
 }
 
-func (ssh *ServerStatsHandler) HandleRoutes(context string, r *mux.Router, errFunc httpserver.ErrHandler) *mux.Router {
-	r.HandleFunc(fmt.Sprintf("%s/serverstats", context), errFunc(ssh.serveHome))
-	r.HandleFunc(fmt.Sprintf("%s/serverstats3d", context), errFunc(ssh.serveStats3d))
-	r.HandleFunc(fmt.Sprintf("%s/ws", context), errFunc(func(w http.ResponseWriter, r *http.Request) {
+func (ssh *ServerStatsHandler) GetRoutes() []*httpserver.Route {
+
+	serverstats := httpserver.NewRoute("serverstats", ssh.serveHome)
+	serverstats3D := httpserver.NewRoute("serverstats3d", ssh.serveStats3d)
+	ws := httpserver.NewRoute("ws", func(w http.ResponseWriter, r *http.Request) {
 		ssh.serveWs(ssh.hub, ssh.serverstats.Metrics, w, r)
-	}))
-	return r
+	})
+
+	routes := []*httpserver.Route{serverstats, serverstats3D, ws}
+	return routes
 }
