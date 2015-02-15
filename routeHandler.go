@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -24,32 +24,17 @@ func NewServerStatsHandler(h *WSHub, serverStats *serverstats.ServerStats) *Serv
 }
 
 func (ssh *ServerStatsHandler) serveHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("server stats")
-
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	serverLoad.Execute(w, r.Host)
 }
 
 func (ssh *ServerStatsHandler) serveStats3d(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("serve stats 3d")
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	serverstats3d.Execute(w, r.Host)
 }
 
 // serverWs handles websocket requests from the peer.
 func (ssh *ServerStatsHandler) serveWs(hub *WSHub, metrics chan serverstats.Metric, w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -64,9 +49,9 @@ func (ssh *ServerStatsHandler) serveWs(hub *WSHub, metrics chan serverstats.Metr
 
 func (ssh *ServerStatsHandler) GetRoutes() []*httpserver.Route {
 
-	serverstats := httpserver.NewRoute("serverstats", ssh.serveHome)
-	serverstats3D := httpserver.NewRoute("serverstats3d", ssh.serveStats3d)
-	ws := httpserver.NewRoute("ws", func(w http.ResponseWriter, r *http.Request) {
+	serverstats := httpserver.NewRoute("serverstats", httpserver.GetMethod, ssh.serveHome)
+	serverstats3D := httpserver.NewRoute("serverstats3d", httpserver.GetMethod, ssh.serveStats3d)
+	ws := httpserver.NewRoute("ws", httpserver.GetMethod, func(w http.ResponseWriter, r *http.Request) {
 		ssh.serveWs(ssh.hub, ssh.serverstats.Metrics, w, r)
 	})
 
